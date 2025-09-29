@@ -23,4 +23,8 @@ Các chức năng chính:
 ## Trang thể hiện thiết bị theo giá tăng dần
 <img width="1920" height="340" alt="image" src="https://github.com/user-attachments/assets/a39f178a-d4de-436f-a558-ebd57c16ca5f" />
 
+## Trang hiển thị sản phẩm của 1 category thông qua postman
+<img width="891" height="429" alt="image" src="https://github.com/user-attachments/assets/ee513650-85be-4093-a468-f52dd5ed4e2d" />
+
+
 
