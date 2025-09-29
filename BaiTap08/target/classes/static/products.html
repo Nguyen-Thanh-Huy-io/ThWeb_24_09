@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách sản phẩm (GraphQL)</title>
+    <style>
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; }
+        th { background: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Danh sách sản phẩm (Sắp xếp theo giá tăng dần)</h1>
+    <table id="productTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên sản phẩm</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Người bán</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dữ liệu sẽ được render ở đây -->
+        </tbody>
+    </table>
+    <script>
+    async function fetchProducts() {
+        const response = await fetch('http://localhost:8081/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                query: `{
+                  productsByPriceAsc {
+                    id
+                    title
+                    price
+                    quantity
+                    user { fullname }
+                  }
+                }`
+            })
+        });
+        const result = await response.json();
+        return result.data.productsByPriceAsc;
+    }
+
+    function renderProducts(products) {
+        const tbody = document.querySelector('#productTable tbody');
+        tbody.innerHTML = '';
+        products.forEach(p => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${p.id}</td>
+                <td>${p.title}</td>
+                <td>${p.price}</td>
+                <td>${p.quantity}</td>
+                <td>${p.user ? p.user.fullname : ''}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    fetchProducts().then(renderProducts);
+    </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GraphQL Products</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+    <h1>Danh sách sản phẩm (Sắp xếp theo giá tăng dần)</h1>
+    <table id="productTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tên sản phẩm</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Người bán</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+
+    <script>
+        // Hàm này thực hiện việc gọi API bằng AJAX.
+        // Nó gửi một yêu cầu POST đến backend mà không cần tải lại trang.
+        async function callGraphQL(query) {
+            const response = await fetch('/graphql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: query })
+            });
+            return response.json();
+        }
+
+        // Hàm này thực hiện việc "render" dữ liệu.
+        // Nó nhận dữ liệu JSON từ API và chuyển thành các dòng HTML (<tr>, <td>) để hiển thị.
+        function renderProducts(products) {
+            const tableBody = document.querySelector("#productTable tbody");
+            tableBody.innerHTML = ''; // Xóa dữ liệu cũ
+            products.forEach(product => {
+                const row = `
+                    <tr>
+                        <td>${product.id}</td>
+                        <td>${product.title}</td>
+                        <td>${product.price.toLocaleString('vi-VN')} VNĐ</td>
+                        <td>${product.quantity}</td>
+                        <td>${product.user.fullname}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        }
+
+        // Đoạn code này sẽ tự động chạy khi trang web được tải xong.
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Định nghĩa câu query GraphQL cần lấy dữ liệu
+            const getProductsQuery = `
+                query {
+                    productsByPriceAsc {
+                        id
+                        title
+                        price
+                        quantity
+                        user {
+                            fullname
+                        }
+                    }
+                }
+            `;
+            
+            // 2. Gọi API bằng AJAX
+            callGraphQL(getProductsQuery).then(result => {
+                const products = result.data.productsByPriceAsc;
+                // 3. Render dữ liệu nhận được lên bảng
+                renderProducts(products);
+            }).catch(error => console.error('Error fetching products:', error));
+        });
+    </script>
+
+</body>
+</html>

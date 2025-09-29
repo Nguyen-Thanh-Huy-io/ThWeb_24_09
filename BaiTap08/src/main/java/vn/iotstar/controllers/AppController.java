@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-// Khai báo Input Types để khớp với schema
-// Bạn có thể tạo các file riêng cho chúng hoặc định nghĩa chúng ở đây
 record UserInput(String fullname, String email, String password, String phone) {}
 record CategoryInput(String name, String images) {}
 record ProductInput(String title, int quantity, String description, double price, Long userId, List<Long> categoryIds) {}
@@ -43,13 +41,13 @@ public class AppController {
     }
 
     @QueryMapping
-    public List<Product> productsByCategory(@Argument Long categoryId) {
-        return productRepository.findByCategories_Id(categoryId);
+    public List<Product> productsByCategory(@Argument String categoryId) {
+        return productRepository.findByCategories_Id(Long.valueOf(categoryId));
     }
 
     @QueryMapping
-    public Optional<Product> productById(@Argument Long id) {
-        return productRepository.findById(id);
+    public Optional<Product> productById(@Argument String id) { // SỬA Ở ĐÂY
+        return productRepository.findById(Long.valueOf(id));
     }
     
     @QueryMapping
@@ -58,8 +56,8 @@ public class AppController {
     }
     
     @QueryMapping
-    public Optional<User> userById(@Argument Long id) {
-        return userRepository.findById(id);
+    public Optional<User> userById(@Argument String id) { // SỬA Ở ĐÂY
+        return userRepository.findById(Long.valueOf(id));
     }
     
     @QueryMapping
@@ -68,8 +66,8 @@ public class AppController {
     }
     
     @QueryMapping
-    public Optional<Category> categoryById(@Argument Long id) {
-        return categoryRepository.findById(id);
+    public Optional<Category> categoryById(@Argument String id) { // SỬA Ở ĐÂY
+        return categoryRepository.findById(Long.valueOf(id));
     }
 
     // === MUTATIONS ===
@@ -80,14 +78,14 @@ public class AppController {
         User newUser = new User();
         newUser.setFullname(user.fullname());
         newUser.setEmail(user.email());
-        newUser.setPassword(user.password()); // Nên mã hóa mật khẩu trong thực tế
+        newUser.setPassword(user.password());
         newUser.setPhone(user.phone());
         return userRepository.save(newUser);
     }
 
     @MutationMapping
-    public User updateUser(@Argument Long id, @Argument UserInput user) {
-        User existingUser = userRepository.findById(id)
+    public User updateUser(@Argument String id, @Argument UserInput user) { // SỬA Ở ĐÂY
+        User existingUser = userRepository.findById(Long.valueOf(id))
             .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
         existingUser.setFullname(user.fullname());
         existingUser.setEmail(user.email());
@@ -97,8 +95,8 @@ public class AppController {
     }
 
     @MutationMapping
-    public boolean deleteUser(@Argument Long id) {
-        userRepository.deleteById(id);
+    public boolean deleteUser(@Argument String id) { // SỬA Ở ĐÂY
+        userRepository.deleteById(Long.valueOf(id));
         return true;
     }
 
@@ -112,8 +110,8 @@ public class AppController {
     }
 
     @MutationMapping
-    public Category updateCategory(@Argument Long id, @Argument CategoryInput category) {
-        Category existingCategory = categoryRepository.findById(id)
+    public Category updateCategory(@Argument String id, @Argument CategoryInput category) { // SỬA Ở ĐÂY
+        Category existingCategory = categoryRepository.findById(Long.valueOf(id))
             .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
         existingCategory.setName(category.name());
         existingCategory.setImages(category.images());
@@ -121,8 +119,8 @@ public class AppController {
     }
     
     @MutationMapping
-    public boolean deleteCategory(@Argument Long id) {
-        categoryRepository.deleteById(id);
+    public boolean deleteCategory(@Argument String id) { // SỬA Ở ĐÂY
+        categoryRepository.deleteById(Long.valueOf(id));
         return true;
     }
 
@@ -146,8 +144,8 @@ public class AppController {
     }
     
     @MutationMapping
-    public Product updateProduct(@Argument Long id, @Argument ProductInput product) {
-        Product existingProduct = productRepository.findById(id)
+    public Product updateProduct(@Argument String id, @Argument ProductInput product) { // SỬA Ở ĐÂY
+        Product existingProduct = productRepository.findById(Long.valueOf(id))
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
 
         User user = userRepository.findById(product.userId())
@@ -166,8 +164,8 @@ public class AppController {
     }
 
     @MutationMapping
-    public boolean deleteProduct(@Argument Long id) {
-        productRepository.deleteById(id);
+    public boolean deleteProduct(@Argument String id) { // SỬA Ở ĐÂY
+        productRepository.deleteById(Long.valueOf(id));
         return true;
     }
 }

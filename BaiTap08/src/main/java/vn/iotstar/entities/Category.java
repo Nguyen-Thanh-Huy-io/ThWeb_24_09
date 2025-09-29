@@ -30,6 +30,14 @@ public class Category {
 
     private String images;
 
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
+    }
+
     @ManyToMany(mappedBy = "categories")
     @JsonIgnore
     private Set<Product> products = new HashSet<>();
